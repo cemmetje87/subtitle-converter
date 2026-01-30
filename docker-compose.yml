@@ -1,0 +1,31 @@
+services:
+  # Subtitle Converter App
+  app:
+    build: .
+    container_name: subtitle-converter
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENSUBTITLES_API_KEY=${OPENSUBTITLES_API_KEY}
+      - LIBRETRANSLATE_URL=http://libretranslate:5000
+      - LIBRETRANSLATE_API_KEY=${LIBRETRANSLATE_API_KEY:-}
+    depends_on:
+      - libretranslate
+    restart: unless-stopped
+
+  # LibreTranslate Service
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: libretranslate
+    ports:
+      - "5000:5000"
+    environment:
+      - LT_LOAD_ONLY=en,th,es,fr,de,pt,it,ja,zh,ko
+    restart: unless-stopped
+    # Uncomment to persist language models across restarts:
+    # volumes:
+    #   - libretranslate_data:/home/libretranslate/.local
+
+# Uncomment to persist language models:
+# volumes:
+#   libretranslate_data:
