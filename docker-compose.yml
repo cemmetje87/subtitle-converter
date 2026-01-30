@@ -7,7 +7,7 @@ services:
       - "8000:8000"
     environment:
       - OPENSUBTITLES_API_KEY=${OPENSUBTITLES_API_KEY}
-      - LIBRETRANSLATE_URL=http://libretranslate:5000
+      - LIBRETRANSLATE_URL=http://libretranslate:5050
       - LIBRETRANSLATE_API_KEY=${LIBRETRANSLATE_API_KEY:-}
     depends_on:
       - libretranslate
@@ -18,9 +18,9 @@ services:
     image: libretranslate/libretranslate:latest
     container_name: libretranslate
     ports:
-      - "5000:5000"
+      - "5050:5050"
     environment:
-      - LT_LOAD_ONLY=en,th,es,fr,de,pt,it,ja,zh,ko
+      - LT_LOAD_ONLY=en,th,nl,tr
     restart: unless-stopped
     # Uncomment to persist language models across restarts:
     # volumes:
