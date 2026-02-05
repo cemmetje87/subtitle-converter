@@ -1,0 +1,108 @@
+---
+description: SRE operations standards, incident management, deployment and monitoring best practices
+alwaysApply: true
+---
+
+# SRE & Engineering Best Practices
+
+Guidance for SRE operations and engineering excellence in modern software development.
+
+## SRE Operations
+
+### Deployment Standards
+
+- Follow documented deployment guides and runbooks
+- Use Infrastructure as Code (IaC) with proper state management
+- Validate infrastructure changes in staging before applying to production
+- Document all deployment decisions and configurations
+- Implement blue-green or canary deployments for critical services
+
+### Incident Management
+
+- Use post-incident review templates for all significant incidents
+- Differentiate between customer-facing and internal incidents
+- Follow established incident response procedures
+- Complete incident reviews within defined SLAs
+- Focus on blameless postmortems and continuous improvement
+
+### Monitoring & Alerting
+
+- Maintain documented alert response procedures (runbooks)
+- Follow selective alerting principles to reduce alert fatigue
+- Document new alerts in runbooks before enabling
+- Set alert thresholds based on SLAs and actual impact
+- Implement multi-level severity (warning, critical) where appropriate
+
+### Infrastructure Operations
+
+- Follow regular patching and update schedules
+- Implement and test backup/restore procedures regularly
+- Use bastion hosts or VPNs for secure access to production
+- Maintain proper access controls and audit logging
+- Document compliance requirements for regulated environments
+
+### Change Management
+
+- All significant architectural changes require design documentation
+- Use appropriate templates for different change types
+- Obtain technical review and sign-off before implementation
+- Document decisions and rationale for future reference
+
+### Infrastructure as Code Standards
+
+- Use separate state management for environment isolation
+- Use workspaces or modules for component separation
+- Follow consistent style guides (e.g., `terraform fmt`)
+- Run validation before commits
+- Implement proper secrets management
+
+## Engineering Standards
+
+### Architecture & Design
+
+- Document architectural decisions with clear rationale
+- Create threat models for security-sensitive components
+- Maintain clear separation of concerns
+- Design for observability from the start
+
+### Configuration Management
+
+- All configuration should be well-documented
+- Use environment variables or configuration files
+- Document default values and acceptable ranges
+- Track configuration changes in version control
+- Document security implications for sensitive settings
+
+### Observability
+
+- Implement comprehensive observability (logs, metrics, traces)
+- Document all monitoring points and alert thresholds
+- Use structured logging for easier parsing and analysis
+- Implement health checks and readiness probes
+- Monitor both system metrics and application telemetry
+
+## Best Practices Quick Reference
+
+### Code Quality
+- Write tests alongside code
+- Use CI/CD for automated testing and deployment
+- Perform code reviews for all changes
+- Use linting and static analysis tools
+
+### Performance
+- Profile before optimizing
+- Document performance benchmarks
+- Monitor resource utilization
+- Implement caching strategically
+
+### Security
+- Follow the principle of least privilege
+- Keep dependencies updated
+- Use secrets managers for sensitive data
+- Implement security scanning in CI/CD
+
+### Documentation
+- Keep README files up to date
+- Document complex logic inline
+- Maintain runbooks for operations
+- Create architecture diagrams for complex systems

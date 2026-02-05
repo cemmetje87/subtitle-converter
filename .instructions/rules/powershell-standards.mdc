@@ -1,0 +1,179 @@
+---
+description: PowerShell coding standards and best practices for CorpIT automation
+globs: ["**/*.ps1", "**/*.psm1", "**/*.psd1"]
+alwaysApply: false
+---
+
+# PowerShell Standards
+
+## Module Design Principles
+
+1. **Single Responsibility**: Each module should have one clear purpose
+2. **Dependency Injection**: Pass configuration objects, don't hardcode values
+3. **Export Only Public Functions**: Use `Export-ModuleMember` explicitly
+4. **Version Your Modules**: Include version information in module manifest
+5. **Document All Public Functions**: Comprehensive help text with examples
+w
+## PowerShell Best Practices
+
+### Error Handling
+```powershell
+# Use -ErrorAction Stop for critical operations
+try {
+    $result = Get-ADUser -Identity $SamAccountName -ErrorAction Stop
+} catch [Microsoft.ActiveDirectory.Management.ADIdentityNotFoundException] {
+    # Handle specific error types
+    Write-PSFMessage -Level Warning -Message "User $SamAccountName not found"
+} catch {
+    # Handle other errors with context
+    Write-PSFMessage -Level Error -Message "Failed to get user: $_" -ErrorRecord $_
+    throw
+}
+```
+
+### Function Structure
+```powershell
+function Verb-Noun {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true, HelpMessage = "Description")]
+        [ValidateNotNullOrEmpty()]
+        [string]$RequiredParam,
+        
+        [Parameter()]
+        [int]$OptionalParam = 10
+    )
+    
+    begin {
+        # Initialize resources
+    }
+    
+    process {
+        # Main logic
+    }
+    
+    end {
+        # Cleanup
+    }
+}
+```
+
+### Logging
+- Use `Write-PSFMessage` from PSFramework for structured logging
+- Use appropriate log levels: Verbose, Information, Warning, Error, Critical
+- Include context: User, Operation, System, Duration
+- Never use `Write-Host` in production code
+
+### Input Validation
+```powershell
+[Parameter(Mandatory = $true)]
+[ValidateNotNullOrEmpty()]
+[ValidatePattern('^[a-zA-Z0-9]+$')]
+[string]$Username
+
+[Parameter()]
+[ValidateSet('Enable', 'Disable', 'Reset')]
+[string]$Action = 'Enable'
+
+[Parameter()]
+[ValidateRange(1, 100)]
+[int]$RetryCount = 3
+```
+
+## Code Review Checklist
+
+When reviewing code, verify:
+- [ ] Proper error handling with try-catch-finally
+- [ ] Input validation on all parameters
+- [ ] Consistent logging using PSFramework
+- [ ] No hardcoded values (use configuration)
+- [ ] Proper use of `-ErrorAction` and `-ErrorVariable`
+- [ ] Resource cleanup (disconnect sessions, close connections)
+- [ ] No `Write-Host` in production code
+- [ ] Functions are testable (no hidden dependencies)
+- [ ] Help text is comprehensive with examples
+- [ ] Code follows PowerShell style guide
+
+## Error Handling Patterns
+
+### Retry with Exponential Backoff
+```powershell
+function Invoke-WithRetry {
+    param(
+        [scriptblock]$ScriptBlock,
+        [int]$MaxRetries = 3,
+        [int]$InitialDelay = 1
+    )
+    
+    $retryCount = 0
+    $delay = $InitialDelay
+    
+    do {
+        try {
+            return & $ScriptBlock
+        } catch {
+            $retryCount++
+            if ($retryCount -gt $MaxRetries) { throw }
+            
+            Write-PSFMessage -Level Warning -Message "Retry $retryCount/$MaxRetries after $delay seconds"
+            Start-Sleep -Seconds $delay
+            $delay *= 2
+        }
+    } while ($true)
+}
+```
+
+### Contextual Error Messages
+```powershell
+# Bad - no context
+throw "Operation failed"
+
+# Good - includes context
+throw "Failed to disable account for $UserPrincipalName in AD: $_"
+```
+
+## Connection Management
+
+### Always Disconnect When Done
+```powershell
+try {
+    Connect-MgGraph -ClientId $ClientId -TenantId $TenantId -Certificate $Cert
+    # ... operations ...
+} finally {
+    Disconnect-MgGraph -ErrorAction SilentlyContinue
+}
+```
+
+### Reuse Connections
+```powershell
+# Check if already connected
+$context = Get-MgContext
+if (-not $context) {
+    Connect-MgGraph @ConnectionParams
+}
+```
+
+## Testing Requirements
+
+- Use Pester 5+ for all tests
+- Mock external system calls
+- Test both success and failure paths
+- Aim for 80%+ coverage on critical paths
+- Test edge cases (empty inputs, null values, rate limiting)
+
+## Naming Conventions
+
+- **Functions**: `Verb-BLNoun` (e.g., `Get-BLOffboardingUsers`, `Disable-BLADAccount`)
+- **Modules**: `BL<Purpose>Module.psm1`
+- **Parameters**: PascalCase, descriptive names
+- **Variables**: camelCase for local, PascalCase for script-level
+- **Constants**: ALL_CAPS with underscores
+
+## Performance Guidelines
+
+- Use `-Parallel` for independent operations (PowerShell 7)
+- Batch external API calls where possible
+- Cache frequently accessed data
+- Avoid loading modules multiple times
+- Use specific filters to reduce query scope
+- Limit returned properties to what's needed

@@ -31,3 +31,14 @@ README.md
 
 # Tests
 tests/
+
+# Development artifacts
+server_debug.log
+debug_parser.py
+repro_parser.py
+*.zip
+a4kSubtitles_research/
+
+# Brain artifacts
+.gemini/
+.instructions/

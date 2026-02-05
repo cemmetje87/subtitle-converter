@@ -3,7 +3,9 @@
 import httpx
 from typing import Optional
 import re
+import logging
 
+logger = logging.getLogger(__name__)
 
 class TranslatorClient:
     """Client for interacting with LibreTranslate API"""
@@ -36,12 +38,17 @@ class TranslatorClient:
         Returns:
             Translated text
         """
+        if not text or not text.strip():
+            return text
+
         payload = {
             "q": text,
             "source": source,
             "target": target,
             "format": "text",
         }
+
+        # logger.info(f"Translating: {text[:50]}...") 
 
         if self.api_key:
             payload["api_key"] = self.api_key
@@ -52,6 +59,10 @@ class TranslatorClient:
                 json=payload,
                 timeout=60.0,
             )
+            if response.status_code != 200:
+                logger.error(f"Translation failed: {response.status_code} - {response.text}")
+                logger.error(f"Payload: {payload}")
+                
             response.raise_for_status()
             result = response.json()
             return result.get("translatedText", "")
@@ -100,8 +111,18 @@ class TranslatorClient:
     def _parse_srt(self, content: str) -> list:
         """Parse SRT content into blocks"""
         blocks = []
+        # Normalise line endings using simple replace, to handle mixed/windows endings safely
+        content = content.replace('\r\n', '\n').replace('\r', '\n')
+        
+        # Remove BOM if present (utf-8-sig in subdl generally handles this, but good to be safe)
+        if content.startswith('\ufeff'):
+            content = content[1:]
+
         # Split by double newline (block separator)
-        raw_blocks = re.split(r'\n\n+', content.strip())
+        # Regex explanation: \n followed by any whitespace (including newlines) followed by \n
+        # This handles \n\n, \n  \n, \n\r\n etc (though we normalized already)
+        raw_blocks = re.split(r'\n\s*\n', content.strip())
+        logger.debug(f"Parser found {len(raw_blocks)} raw blocks")
 
         for raw_block in raw_blocks:
             lines = raw_block.strip().split('\n')
@@ -119,6 +140,22 @@ class TranslatorClient:
                     # Skip malformed blocks
                     continue
 
+        # Validate parsing results
+        if not blocks:
+            # Check for common unsupported formats signature
+            signature = content[:50].strip()
+            error_msg = "No valid subtitle blocks found. "
+            if "<SAMI>" in signature or "<HEAD>" in signature:
+                error_msg += "Format appears to be SAMI (.smi) which is not supported."
+            elif "{1}" in signature:
+                error_msg += "Format appears to be MicroDVD (.sub) which is not supported."
+            else:
+                error_msg += "Format invalid or not supported (only SRT is supported)."
+            
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        logger.debug(f"Parser validated {len(blocks)} blocks")
         return blocks
 
     def _build_srt(self, blocks: list) -> str:

@@ -20,3 +20,11 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Development artifacts
+server_debug.log
+debug_parser.py
+repro_parser.py
+*.zip
+archive/
+a4kSubtitles_research/

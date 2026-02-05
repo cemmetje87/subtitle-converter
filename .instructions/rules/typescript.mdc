@@ -1,0 +1,52 @@
+---
+description: TypeScript and JavaScript coding standards
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+alwaysApply: false
+---
+
+# TypeScript Standards
+
+## Type Safety
+- Enable strict mode in tsconfig
+- Avoid `any` type - use `unknown` when type is truly unknown
+- Use explicit return types for public functions
+- Prefer interfaces for object shapes, types for unions/intersections
+
+## Naming Conventions
+- PascalCase for types, interfaces, classes, enums
+- camelCase for variables, functions, methods
+- SCREAMING_SNAKE_CASE for constants
+- Use descriptive names with auxiliary verbs: `isLoading`, `hasError`, `canSubmit`
+
+## Functions
+- Prefer arrow functions for callbacks
+- Use async/await over raw promises
+- Keep functions pure when possible
+- Use early returns to reduce nesting
+
+## Imports
+- Use named exports over default exports
+- Group imports: external, internal, relative
+- Use absolute imports with path aliases when available
+
+## React Specific
+- Use functional components with hooks
+- Prefer composition over inheritance
+- Keep components small and focused
+- Extract custom hooks for reusable logic
+
+## Error Handling
+```typescript
+// Prefer explicit error types
+type Result<T, E = Error> = { ok: true; value: T } | { ok: false; error: E };
+
+// Use try-catch with typed errors
+try {
+  await riskyOperation();
+} catch (error) {
+  if (error instanceof SpecificError) {
+    // Handle specific case
+  }
+  throw error; // Re-throw unknown errors
+}
+```

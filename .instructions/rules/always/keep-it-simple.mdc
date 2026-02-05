@@ -1,0 +1,104 @@
+---
+description: KISS, YAGNI principles - keep solutions simple and well-understood
+alwaysApply: true
+---
+
+# Programming and Engineering Simplicity Guide
+
+## Core Principles for Simple, Well-Understood Solutions
+
+### 1. KISS Principle (Keep It Simple, Stupid)
+
+Systems should be as simple as possible. Complexity should be avoided because simplicity guarantees the greatest levels of code usability and maintainability.
+
+**Why it matters:**
+
+- Simpler solutions are easier to maintain, evolve, and use
+- Reduces unnecessary features and complexity
+- Improves user experience by creating intuitive interfaces
+- Aligns with real user needs rather than theoretical ones
+
+### 2. Avoid Over-Engineering
+
+Over-engineering means writing code that solves problems the client doesn't have.
+
+**Red flags:**
+
+- Adding features "just in case" for hypothetical future scenarios
+- Using complex patterns when simple solutions exist
+- Building custom solutions when proven libraries exist
+- Creating excessive abstraction layers
+- Designing too far into the future
+
+**Solution:** Focus on solving actual business problems with the simplest approach that works.
+
+### 3. Single Responsibility Principle (SRP)
+
+Every class, module, or function should have one, and only one, well-defined responsibility.
+
+**Benefits:**
+
+- Reduces bloated, hard-to-maintain code
+- Makes code easier to understand and modify
+- Simplifies testing and debugging
+- Increases code reusability
+
+### 4. YAGNI (You Aren't Gonna Need It)
+
+Only implement features when they are actually needed, not when you think they might be needed someday.
+
+**Implementation:**
+
+- Build minimal solutions that address pressing needs
+- Expand strategically based on real requirements
+- Avoid pre-building for speculative future features
+- Start small and grow based on validation
+
+### 5. Modular Design
+
+Break down functionality into smaller, manageable pieces with simple, clearly defined interfaces.
+
+**Advantages:**
+
+- Enhances flexibility and adaptability
+- Easier to integrate changes or new features
+- Components can be understood independently
+- Promotes code reuse
+
+### 6. Chesterton's Fence Principle
+
+Never remove or significantly alter code until you understand why it exists.
+
+**Application:**
+
+- Research the history and purpose of existing code
+- Understand dependencies before making changes
+- Avoid breaking systems through seemingly small tweaks
+- Document the reasoning behind non-obvious code
+
+---
+
+## Key Takeaways
+
+| Principle | Complex Example | Simple Example |
+|-----------|---|---|
+| **Abstraction layers** | Multiple modules/classes hiding logic | Direct resource/function definitions |
+| **Configuration** | 10+ parameters, many optional | 2-3 essential parameters, sensible defaults |
+| **Error handling** | Custom frameworks and decorators | Native language features |
+| **Dependencies** | Multiple custom libraries | Use built-in tools |
+| **Readability** | Have to read multiple files | Can understand in one view |
+| **Maintenance** | Hard to debug, unclear intent | Obvious what happens and why |
+
+**The pattern:** Simple solutions are **boring**, **obvious**, and **maintainable**. Complex solutions are **clever**, **fragile**, and **expensive**.
+
+---
+
+## How to Apply This
+
+**Ask yourself:**
+
+- Can this be simpler?
+- Am I solving a real problem or an imagined one?
+- Is this understandable to someone new?
+- What's the minimal viable solution?
+- Will this be easy to maintain in 6 months?

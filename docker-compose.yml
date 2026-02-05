@@ -1,31 +1,49 @@
 services:
-  # Subtitle Converter App
-  app:
-    build: .
+  # LibreTranslate service for translations
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: subtitle-libretranslate
+    restart: unless-stopped
+    ports:
+      - "5050:5000"
+    environment:
+      - LT_LOAD_ONLY=en,th,nl,tr
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/languages || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Main web application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: subtitle-converter
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       - OPENSUBTITLES_API_KEY=${OPENSUBTITLES_API_KEY}
-      - LIBRETRANSLATE_URL=http://libretranslate:5050
+      - SUBDL_API_KEY=${SUBDL_API_KEY}
+      - LIBRETRANSLATE_URL=http://libretranslate:5000
       - LIBRETRANSLATE_API_KEY=${LIBRETRANSLATE_API_KEY:-}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - CORS_ORIGINS=${CORS_ORIGINS:-*}
+    volumes:
+      - ./archive:/app/archive
     depends_on:
-      - libretranslate
-    restart: unless-stopped
+      libretranslate:
+        condition: service_healthy
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:8000/api/languages || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
-  # LibreTranslate Service
-  libretranslate:
-    image: libretranslate/libretranslate:latest
-    container_name: libretranslate
-    ports:
-      - "5050:5050"
-    environment:
-      - LT_LOAD_ONLY=en,th,nl,tr
-    restart: unless-stopped
-    # Uncomment to persist language models across restarts:
-    # volumes:
-    #   - libretranslate_data:/home/libretranslate/.local
-
-# Uncomment to persist language models:
-# volumes:
-#   libretranslate_data:
+volumes:
+  archive:
+    driver: local

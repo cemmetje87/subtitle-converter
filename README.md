@@ -12,20 +12,34 @@ A web application to search, download, and translate subtitles from OpenSubtitle
 
 ## Quick Start with Docker (Recommended)
 
-1. **Configure your API key:**
+1. **Configure your API keys:**
+
    ```bash
    cp .env.example .env
-   # Edit .env and add your OPENSUBTITLES_API_KEY
+   # Edit .env and add your API keys:
+   # - OPENSUBTITLES_API_KEY (get from https://www.opensubtitles.com/en/consumers)
+   # - SUBDL_API_KEY (get from https://subdl.com/api)
    ```
 
-2. **Start everything:**
+2. **Start all services:**
+
    ```bash
    docker compose up -d
    ```
 
-3. **Open in browser:** [http://localhost:8000](http://localhost:8000)
+   This will start:
+   - LibreTranslate service on port 5050
+   - Web application on port 8000
 
-4. **Stop when done:**
+3. **View logs** (optional):
+
+   ```bash
+   docker compose logs -f
+   ```
+
+4. **Open in browser:** [http://localhost:8000](http://localhost:8000)
+
+5. **Stop services:**
    ```bash
    docker compose down
    ```
@@ -33,6 +47,7 @@ A web application to search, download, and translate subtitles from OpenSubtitle
 ## Manual Setup (Without Docker)
 
 ### Prerequisites
+
 - Python 3.11+
 - [uv](https://astral.sh/uv) package manager
 - OpenSubtitles API key ([get one here](https://www.opensubtitles.com/en/consumers))
@@ -40,22 +55,26 @@ A web application to search, download, and translate subtitles from OpenSubtitle
 ### Steps
 
 1. **Install dependencies:**
+
    ```bash
    uv sync
    ```
 
 2. **Configure environment:**
+
    ```bash
    cp .env.example .env
    # Edit .env and add your API keys
    ```
 
 3. **Start LibreTranslate** (for translation):
+
    ```bash
    docker run -d --name libretranslate -p 5000:5000 libretranslate/libretranslate
    ```
 
 4. **Run the application:**
+
    ```bash
    uv run uvicorn src.main:app --reload
    ```
@@ -72,14 +91,14 @@ A web application to search, download, and translate subtitles from OpenSubtitle
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/languages` | List available subtitle languages |
-| GET | `/api/translation-languages` | List translation languages |
-| GET | `/api/search` | Search subtitles |
-| POST | `/api/download` | Download subtitle (with optional sync) |
-| POST | `/api/sync` | Download with timing sync |
-| POST | `/api/translate` | Translate and download |
+| Method | Endpoint                     | Description                            |
+| ------ | ---------------------------- | -------------------------------------- |
+| GET    | `/api/languages`             | List available subtitle languages      |
+| GET    | `/api/translation-languages` | List translation languages             |
+| GET    | `/api/search`                | Search subtitles                       |
+| POST   | `/api/download`              | Download subtitle (with optional sync) |
+| POST   | `/api/sync`                  | Download with timing sync              |
+| POST   | `/api/translate`             | Translate and download                 |
 
 ## Tech Stack
 

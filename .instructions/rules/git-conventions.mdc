@@ -1,0 +1,52 @@
+---
+description: Git workflow and commit conventions
+alwaysApply: false
+---
+
+# Git Conventions
+
+## Commit Messages
+
+Use conventional commits format:
+
+```txt
+
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+### Types
+
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style (formatting, semicolons, etc.)
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+- `ci`: CI/CD changes
+- `build`: Build system changes
+
+### Rules
+
+- Keep subject line under 72 characters
+- Use imperative mood ("add" not "added")
+- Reference issues in footer when applicable
+
+## Branch Naming
+
+- `feature/<ticket>-<short-description>`
+- `bugfix/<ticket>-<short-description>`
+- `hotfix/<ticket>-<short-description>`
+- `release/<version>`
+
+## Pull Requests
+
+- Include clear description of changes
+- Link related issues
+- Request appropriate reviewers
+- Ensure CI passes before merging

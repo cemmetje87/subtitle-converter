@@ -10,6 +10,8 @@ dependencies = [
     "httpx>=0.26.0",
     "python-dotenv>=1.0.0",
     "pysrt>=1.1.2",
+    "rarfile>=4.0",
+    "libretranslate>=1.5.0",
 ]
 
 [project.optional-dependencies]

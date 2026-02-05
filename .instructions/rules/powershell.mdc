@@ -1,0 +1,109 @@
+---
+description: PowerShell and Microsoft Entra PowerShell coding standards
+globs: ["**/*.ps1", "**/*.psm1", "**/*.psd1"]
+alwaysApply: false
+---
+
+# PowerShell Standards
+
+## App Registration & Authentication
+
+- Register custom applications for specific use cases instead of using enterprise apps
+- Use `Connect-Entra -ClientId <app-id> -TenantId <tenant-id>` with registered apps
+- Always run `Disconnect-Entra` when finished to clean up sessions and credentials
+
+## Security Best Practices
+
+- Apply least privilege: grant only the minimum permissions required
+- Use delegated permissions for interactive apps, application permissions for background services
+- Never use both application and delegated permissions in the same app
+- Avoid application permissions in interactive scenarios
+- Watch for permission creep - regularly audit accumulated permissions
+- Use `Assignment Required` property to limit app sign-in to assigned identities
+
+```powershell
+# Example: Require assignment for app access
+Connect-Entra -Scopes 'Application.ReadWrite.All'
+Get-EntraServicePrincipal -Filter "DisplayName eq 'My App'" |
+    Set-EntraServicePrincipal -AppRoleAssignmentRequired $true
+```
+
+## Performance Optimization
+
+- Use server-side filtering with `-Filter` parameter
+- Select only required properties with `-Property` parameter
+- Set page size to maximum (999) for large result sets with `-Top`
+
+```powershell
+# Good: Server-side filtering
+Get-EntraUser -Filter "startsWith(DisplayName,'Ada')"
+
+# Good: Select specific properties
+Get-EntraUser -Property DisplayName, UserPrincipalName
+
+# Good: Large result sets with max page size
+Get-EntraUser -All -Top 999
+```
+
+## Naming Conventions
+
+- Use Verb-Noun format for functions (e.g., `Get-UserInfo`, `Set-Configuration`)
+- Use approved PowerShell verbs (Get, Set, New, Remove, etc.)
+- PascalCase for function names and parameters
+- Use descriptive parameter names
+
+## Error Handling
+
+```powershell
+try {
+    $result = Get-EntraUser -UserId $userId -ErrorAction Stop
+}
+catch [Microsoft.Graph.PowerShell.AuthenticationException] {
+    Write-Error "Authentication failed: $($_.Exception.Message)"
+    throw
+}
+catch {
+    Write-Error "Operation failed: $($_.Exception.Message)"
+    throw
+}
+```
+
+## Debugging & Maintenance
+
+- Use `-Debug` parameter for detailed diagnostic information
+- Send debug output to log file: `Get-EntraUser -Top 1 -Debug 5>> debug.log`
+- Keep Microsoft.Entra module updated: `Update-Module -Name Microsoft.Entra`
+- Use `Get-Help <cmdlet> -Detailed` for cmdlet documentation
+
+## Script Structure
+
+```powershell
+#Requires -Modules Microsoft.Entra
+<#
+.SYNOPSIS
+    Brief description of script purpose
+.DESCRIPTION
+    Detailed description
+.PARAMETER ParameterName
+    Parameter description
+.EXAMPLE
+    Example usage
+#>
+[CmdletBinding()]
+param (
+    [Parameter(Mandatory)]
+    [string]$RequiredParam,
+
+    [Parameter()]
+    [string]$OptionalParam = "default"
+)
+
+# Script logic here
+```
+
+## Module Best Practices
+
+- Use `#Requires` statement for module dependencies
+- Include proper comment-based help
+- Use `[CmdletBinding()]` for advanced function features
+- Support `-WhatIf` and `-Confirm` for destructive operations

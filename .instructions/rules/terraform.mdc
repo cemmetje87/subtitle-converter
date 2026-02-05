@@ -1,0 +1,75 @@
+---
+description: Terraform and Infrastructure as Code standards
+globs: ["**/*.tf", "**/*.tfvars"]
+alwaysApply: false
+---
+
+# Terraform Standards
+
+## File Structure
+
+```txt
+terraform/
+  environments/
+    dev/
+      main.tf
+      variables.tf
+      terraform.tfvars
+    prod/
+  modules/
+    networking/
+    compute/
+```
+
+## Naming Conventions
+
+- Use snake_case for resource names
+- Prefix resources with purpose: `web_server`, `db_instance`
+- Use descriptive names that indicate purpose
+
+## Resource Organization
+
+- Group related resources in the same file
+- Use modules for reusable components
+- Keep root modules simple - delegate to child modules
+
+## Variables
+
+```hcl
+variable "environment" {
+  description = "Deployment environment (dev, staging, prod)"
+  type        = string
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be dev, staging, or prod."
+  }
+}
+
+variable "instance_config" {
+  description = "EC2 instance configuration"
+  type = object({
+    instance_type = string
+    ami_id        = string
+    subnet_id     = string
+  })
+}
+```
+
+## Outputs
+
+- Output values needed by other configurations
+- Use descriptive names and descriptions
+- Mark sensitive outputs appropriately
+
+## State Management
+
+- Use remote state (S3, GCS, Terraform Cloud)
+- Enable state locking
+- Use workspaces or separate state files per environment
+
+## Security
+
+- Never commit secrets or credentials
+- Use data sources for sensitive values
+- Enable encryption for state storage
+- Use least-privilege IAM policies

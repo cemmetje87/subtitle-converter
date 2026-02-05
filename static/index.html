@@ -1,204 +1,381 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Search and download subtitles from OpenSubtitles.org with translation support">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Search and download subtitles from OpenSubtitles.org with translation support"
+    />
     <title>Subtitle Converter - Search, Download & Translate</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css?v=2">
+  </head>
+  <body>
     <div class="app-container">
-        <!-- Animated background -->
-        <div class="bg-gradient"></div>
-        <div class="bg-orb bg-orb-1"></div>
-        <div class="bg-orb bg-orb-2"></div>
-        <div class="bg-orb bg-orb-3"></div>
+      <!-- Animated background -->
+      <div class="bg-gradient"></div>
+      <div class="bg-orb bg-orb-1"></div>
+      <div class="bg-orb bg-orb-2"></div>
+      <div class="bg-orb bg-orb-3"></div>
 
-        <!-- Header -->
-        <header class="header">
-            <div class="logo">
-                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="2" width="20" height="20" rx="2"/>
-                    <line x1="6" y1="10" x2="18" y2="10"/>
-                    <line x1="6" y1="14" x2="14" y2="14"/>
-                    <line x1="6" y1="18" x2="16" y2="18"/>
+      <!-- Header -->
+      <header class="header">
+        <div class="logo">
+          <svg
+            class="logo-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="2" y="2" width="20" height="20" rx="2" />
+            <line x1="6" y1="10" x2="18" y2="10" />
+            <line x1="6" y1="14" x2="14" y2="14" />
+            <line x1="6" y1="18" x2="16" y2="18" />
+          </svg>
+          <h1>Subtitle Converter</h1>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="main-nav">
+          <button class="nav-btn active" data-view="home">Home</button>
+          <button class="nav-btn" data-view="archived">Archived</button>
+          <button class="nav-btn" data-view="translated">Translated</button>
+        </nav>
+      </header>
+
+      <!-- Main content -->
+      <main class="main-content">
+        <!-- HOME VIEW -->
+        <div id="home-view" class="view-section active">
+          <!-- Search card -->
+          <section class="card search-card">
+            <!-- ... existing search form ... -->
+            <h2 class="card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              Search Subtitles
+            </h2>
+
+            <form id="searchForm" class="search-form">
+              <!-- ... (Search form content preserved) ... -->
+              <div class="form-row">
+                <div class="form-group form-group-large">
+                  <label for="query">Movie / TV Show Name</label>
+                  <input
+                    type="text"
+                    id="query"
+                    name="query"
+                    placeholder="e.g., The Matrix, Breaking Bad S01E01"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="searchLanguage">Subtitle Language</label>
+                  <select id="searchLanguage" name="languages">
+                    <option value="en">English</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="year">Year (optional)</label>
+                  <input
+                    type="number"
+                    id="year"
+                    name="year"
+                    placeholder="2023"
+                    min="1900"
+                    max="2099"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="season">Season</label>
+                  <input
+                    type="number"
+                    id="season"
+                    name="season"
+                    placeholder="1"
+                    min="1"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="episode">Episode</label>
+                  <input
+                    type="number"
+                    id="episode"
+                    name="episode"
+                    placeholder="1"
+                    min="1"
+                  />
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="searchBtn">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
                 </svg>
-                <h1>Subtitle Converter</h1>
+                Search Subtitles
+              </button>
+            </form>
+          </section>
+
+          <!-- Translation settings card -->
+          <section class="card translation-card">
+            <h2 class="card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"
+                />
+              </svg>
+              Translation Settings
+            </h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="sourceLang">Translate From</label>
+                <select id="sourceLang">
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="targetLang">Translate To</label>
+                <select id="targetLang">
+                  <option value="th">Thai</option>
+                </select>
+              </div>
             </div>
-            <p class="tagline">Search, download, and translate subtitles from OpenSubtitles.org</p>
-        </header>
 
-        <!-- Main content -->
-        <main class="main-content">
-            <!-- Search card -->
-            <section class="card search-card">
-                <h2 class="card-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                    </svg>
-                    Search Subtitles
-                </h2>
-
-                <form id="searchForm" class="search-form">
-                    <div class="form-row">
-                        <div class="form-group form-group-large">
-                            <label for="query">Movie / TV Show Name</label>
-                            <input type="text" id="query" name="query" placeholder="e.g., The Matrix, Breaking Bad S01E01" required>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="searchLanguage">Subtitle Language</label>
-                            <select id="searchLanguage" name="languages">
-                                <option value="en">English</option>
-                                <option value="th">Thai</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                                <option value="pt">Portuguese</option>
-                                <option value="it">Italian</option>
-                                <option value="ja">Japanese</option>
-                                <option value="ko">Korean</option>
-                                <option value="zh">Chinese</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="year">Year (optional)</label>
-                            <input type="number" id="year" name="year" placeholder="2023" min="1900" max="2099">
-                        </div>
-                        <div class="form-group">
-                            <label for="season">Season</label>
-                            <input type="number" id="season" name="season" placeholder="1" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label for="episode">Episode</label>
-                            <input type="number" id="episode" name="episode" placeholder="1" min="1">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" id="searchBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
-                        Search Subtitles
-                    </button>
-                </form>
-            </section>
-
-            <!-- Translation settings card -->
-            <section class="card translation-card">
-                <h2 class="card-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
-                    </svg>
-                    Translation Settings
-                </h2>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="sourceLang">Translate From</label>
-                        <select id="sourceLang">
-                            <option value="en" selected>English</option>
-                            <option value="es">Spanish</option>
-                            <option value="fr">French</option>
-                            <option value="de">German</option>
-                            <option value="it">Italian</option>
-                            <option value="pt">Portuguese</option>
-                            <option value="ja">Japanese</option>
-                            <option value="zh">Chinese</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="targetLang">Translate To</label>
-                        <select id="targetLang">
-                            <option value="th" selected>Thai</option>
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                            <option value="fr">French</option>
-                            <option value="de">German</option>
-                            <option value="it">Italian</option>
-                            <option value="pt">Portuguese</option>
-                            <option value="ja">Japanese</option>
-                            <option value="zh">Chinese</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="16" x2="12" y2="12"/>
-                        <line x1="12" y1="8" x2="12.01" y2="8"/>
-                    </svg>
-                    <span>Translation uses LibreTranslate. If subtitles aren't available in your language, download English and translate.</span>
-                </div>
-            </section>
-
-            <!-- Sync settings card -->
-            <section class="card sync-card">
-                <h2 class="card-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    Timing Sync
-                </h2>
-
-                <div class="form-row">
-                    <div class="form-group form-group-large">
-                        <label for="syncTime">First Subtitle Start Time (optional)</label>
-                        <input type="text" id="syncTime" placeholder="e.g., 00:01:23,456 or 83.5 (seconds)" />
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="16" x2="12" y2="12"/>
-                        <line x1="12" y1="8" x2="12.01" y2="8"/>
-                    </svg>
-                    <span>Enter when the first subtitle should appear. All other timings will be adjusted accordingly. Supports formats: <strong>00:01:23,456</strong> (SRT), <strong>1:23</strong> (min:sec), or <strong>83.5</strong> (seconds).</span>
-                </div>
-            </section>
-
-            <!-- Results card -->
-            <section class="card results-card" id="resultsCard" style="display: none;">
-                <h2 class="card-title">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
-                    Search Results
-                    <span class="result-count" id="resultCount"></span>
-                </h2>
-
-                <div class="results-container" id="resultsContainer">
-                    <!-- Results will be dynamically inserted here -->
-                </div>
-            </section>
-
-            <!-- Loading overlay -->
-            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
-                <div class="spinner"></div>
-                <p id="loadingText">Searching...</p>
+            <div class="info-box">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span
+                >Translation uses LibreTranslate. If subtitles aren't available
+                in your language, download English and translate.</span
+              >
             </div>
-        </main>
+          </section>
 
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Powered by <a href="https://opensubtitles.org" target="_blank">OpenSubtitles.org</a> & <a href="https://libretranslate.com" target="_blank">LibreTranslate</a></p>
-        </footer>
+          <!-- Sync settings card -->
+          <section class="card sync-card">
+            <h2 class="card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+              Timing Sync
+            </h2>
+
+            <div class="form-row">
+              <div class="form-group form-group-large">
+                <label for="syncTime"
+                  >First Subtitle Start Time (optional)</label
+                >
+                <input
+                  type="text"
+                  id="syncTime"
+                  placeholder="e.g., 00:01:23,456 or 83.5 (seconds)"
+                />
+              </div>
+            </div>
+
+            <div class="info-box">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span
+                >Enter when the first subtitle should appear. All other timings
+                will be adjusted accordingly. Supports formats:
+                <strong>00:01:23,456</strong> (SRT),
+                <strong>1:23</strong> (min:sec), or
+                <strong>83.5</strong> (seconds).</span
+              >
+            </div>
+          </section>
+
+          <!-- Results card -->
+          <section
+            class="card results-card"
+            id="resultsCard"
+            style="display: none"
+          >
+            <h2 class="card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              Search Results
+              <span class="result-count" id="resultCount"></span>
+            </h2>
+
+            <div class="results-container" id="resultsContainer">
+              <!-- Results will be dynamically inserted here -->
+            </div>
+          </section>
+        </div>
+
+        <!-- ARCHIVE View (Originals) -->
+        <div id="archived-view" class="view-section">
+          <div class="view-header">
+            <h1>📁 Archived Subtitles</h1>
+            <p>Manage your downloaded subtitle files</p>
+          </div>
+
+          <!-- Translation settings for archive -->
+          <section class="card translation-card">
+            <h2 class="card-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12.87 15.07l-2.54-2.51.03-.03A17.52 17.52 0 0014.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z" />
+              </svg>
+              Translation Settings
+            </h2>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="archiveSourceLang">Translate From</label>
+                <select id="archiveSourceLang">
+                  <option value="en">English</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="archiveTargetLang">Translate To</label>
+                <select id="archiveTargetLang">
+                  <option value="th">Thai</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="16" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12.01" y2="8" />
+              </svg>
+              <span>Select languages, then click "Translate" on any archived file below</span>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Archived Downloads
+            </h2>
+            <div class="file-list-container" id="archivedList">
+              <p>Loading...</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- TRANSLATED View -->
+        <div id="translated-view" class="view-section">
+          <section class="card">
+            <h2 class="card-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M5 8l6 6" />
+                <path d="M4 14h6" />
+                <path d="M2 5h12" />
+                <path d="M7 2h1" />
+                <path d="M22 22l-5-10-5 10" />
+                <path d="M14 18h6" />
+              </svg>
+              Translated Subtitles
+            </h2>
+            <div class="file-list-container" id="translatedList">
+              <p>Loading...</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Loading overlay -->
+        <div class="loading-overlay" id="loadingOverlay" style="display: none">
+          <div class="spinner"></div>
+          <p id="loadingText">Searching...</p>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>
+          Powered by
+          <a href="https://opensubtitles.org" target="_blank"
+            >OpenSubtitles.org</a
+          >
+          &
+          <a href="https://libretranslate.com" target="_blank"
+            >LibreTranslate</a
+          >
+        </p>
+      </footer>
     </div>
 
     <script src="/static/js/app.js"></script>
-</body>
+  </body>
 </html>

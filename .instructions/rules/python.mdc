@@ -1,0 +1,82 @@
+---
+description: Python coding standards
+globs: ["**/*.py"]
+alwaysApply: false
+---
+
+# Python Standards
+
+## Style
+
+- Follow PEP 8 guidelines
+- Use Black for formatting
+- Use type hints for function signatures
+- Maximum line length: 88 characters (Black default)
+
+## Naming Conventions
+
+- snake_case for functions, variables, modules
+- PascalCase for classes
+- SCREAMING_SNAKE_CASE for constants
+- Prefix private attributes with underscore
+
+## Imports
+
+- Group imports: stdlib, third-party, local
+- Use absolute imports
+- Avoid wildcard imports (`from x import *`)
+
+## Type Hints
+
+```python
+from typing import Optional, List, Dict, Union
+from collections.abc import Callable, Iterable
+
+def process_items(
+    items: List[str],
+    callback: Optional[Callable[[str], None]] = None,
+) -> Dict[str, int]:
+    """Process items and return counts."""
+    ...
+```
+
+## Error Handling
+
+```python
+# Use specific exception types
+class DomainError(Exception):
+    """Base exception for domain errors."""
+    pass
+
+class ValidationError(DomainError):
+    """Raised when validation fails."""
+    pass
+
+# Prefer explicit exception handling
+try:
+    result = risky_operation()
+except SpecificError as e:
+    logger.error("Operation failed", exc_info=True)
+    raise ValidationError(f"Failed: {e}") from e
+```
+
+## Project Structure
+
+```
+src/
+  package_name/
+    __init__.py
+    models/
+    services/
+    utils/
+tests/
+  test_*.py
+pyproject.toml
+```
+
+## Testing
+
+- Use pytest for testing
+- Use fixtures for test setup
+- Name test files with `test_` prefix
+- Aim for high coverage on business logic
